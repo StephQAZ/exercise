@@ -6,10 +6,28 @@
 using namespace cv;
 int main()
 {
-	//读取本地的一张图片便显示出来
-	//imread后面的文件路径可以根据自己的实际路径修改。
-	Mat img = imread("E:/数字图像处理/qq.jpg");
-	imshow("test", img);
+	cv::Mat srcMat = imread("E:\\数字图像处理\\curry.jpg");
+	cv::Mat deepMat, shallowMat;
+	shallowMat = srcMat;
+	srcMat.copyTo(deepMat);
+	int height = srcMat.rows;
+	int width = srcMat.cols;
+	uchar threshold = 100;
+	for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+			uchar average = (srcMat.at<Vec3b>(j, i)[0] +
+				srcMat.at<Vec3b>(j, i)[1] + srcMat.at<Vec3b>(j, i)[2]) / 3;
+			if (average > threshold)
+				average = 255;
+			else
+				average = 0;
+			srcMat.at<Vec3b>(j, i)[0] = average;
+			srcMat.at<Vec3b>(j, i)[1] = average;
+			srcMat.at<Vec3b>(j, i)[2] = average;
+		}
+	}
+	imshow("浅复制修改图", shallowMat);
+	imshow("深复制修改图", deepMat);
 	//等待用户按键
 	waitKey(0);
 	return 0;
